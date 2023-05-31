@@ -1,6 +1,4 @@
 from django.db import models
-from student_profile.models import StudentProfile
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -59,11 +57,27 @@ class CourseSession(models.Model):
 
 
 class CourseEnrollment(models.Model):
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        "student_profile.StudentProfile", on_delete=models.CASCADE
+    )
     course_session = models.ForeignKey(CourseSession, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.student.full_name} - {self.course_session.course.title}"
+        return f"{self.student.full_name} - {self.course_session.course.title}({self.course_session.start} - {self.course_session.end})"
 
     class Meta:
         unique_together = ("student", "course_session")
+
+
+class StudentCourse(models.Model):
+    student = models.ForeignKey(
+        "student_profile.StudentProfile", on_delete=models.CASCADE
+    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course_code = models.CharField
+
+    def __str__(self):
+        return f"{self.student.full_name} - {self.course.title}"
+
+    class Meta:
+        unique_together = ("student", "course")

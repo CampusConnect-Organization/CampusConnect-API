@@ -4,12 +4,12 @@ from rest_framework.request import Request
 from core.response import CustomResponse
 
 from courses.serializers import (
-    CourseEnrollmentListSerializer,
     CourseEnrollmentSerializer,
     CourseSessionSerializer,
     CourseSerializer,
+    StudentCoursesSerializer,
 )
-from courses.models import CourseEnrollment, CourseSession, Course
+from courses.models import CourseEnrollment, CourseSession, Course, StudentCourse
 
 
 class CourseListView(APIView):
@@ -18,11 +18,36 @@ class CourseListView(APIView):
 
     def get(self, request):
         courses = Course.objects.all()
+        if not courses.exists():
+            return CustomResponse.error(
+                message="No courses found!",
+                status_code=404,
+            )
         serializer = self.serializer_class(instance=courses, many=True)
 
         return CustomResponse.success(
             data=serializer.data,
             message="Courses fetched successfully!",
+        )
+
+
+class CourseSemesterView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CourseSerializer
+
+    def get(self, request, semester: str):
+        courses = Course.objects.filter(semester=semester).all()
+        if not courses.exists():
+            return CustomResponse.error(
+                message="Courses not found for given semester!",
+                status_code=404,
+            )
+
+        serializer = self.serializer_class(instance=courses, many=True)
+
+        return CustomResponse.success(
+            data=serializer.data,
+            message=f"Courses of {semester} semester fetched successfully!",
         )
 
 
@@ -73,20 +98,50 @@ class CourseSessionDetailView(APIView):
         )
 
 
-class StudentEnrollmentListView(APIView):
+class StudentCoursesListView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CourseEnrollmentListSerializer
+    serializer_class = StudentCoursesSerializer
+
+    def get(self, request: Request):
+        courses = StudentCourse.objects.filter(student__user=request.user).all()
+        serializer = self.serializer_class(instance=courses, many=True)
+
+        return CustomResponse.success(
+            data=serializer.data, message="Student courses fetched successfully!"
+        )
+
+
+class StudentCourseDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StudentCoursesSerializer
+
+    def get(self, request: Request, pk: int):
+        course = StudentCourse.objects.filter(student__user=request.user, id=pk).first()
+        if not course:
+            return CustomResponse.error(
+                message=f"Enrollment with ID {pk} doesn't exist!", status_code=404
+            )
+        serializer = self.serializer_class(instance=course)
+
+        return CustomResponse.success(
+            data=serializer.data, message="Student course fetched successfully!"
+        )
+
+
+class CourseEnrollmentListView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CourseEnrollmentSerializer
 
     def get(self, request: Request):
         enrollments = CourseEnrollment.objects.filter(student__user=request.user).all()
-        serializer = self.serializer_class(instance=enrollments)
+        serializer = self.serializer_class(instance=enrollments, many=True)
 
         return CustomResponse.success(
             data=serializer.data, message="Enrollments fetched successfully!"
         )
 
 
-class StudentEnrollmentDetailView(APIView):
+class CourseEnrollmentDetailView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CourseEnrollmentSerializer
 

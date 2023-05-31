@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import StudentProfile
 from django.contrib import messages
-from courses.models import InstructorProfile
+from courses.models import Course, CourseEnrollment, InstructorProfile, StudentCourse
 
 
 class StudentProfileAdmin(admin.ModelAdmin):
@@ -31,7 +31,19 @@ class StudentProfileAdmin(admin.ModelAdmin):
                 request, "An instructor profile already exists for this user."
             )
             return
+
+        if change and "semester" in form.changed_data:
+            StudentCourse.objects.filter(student=obj).delete()
+
         super().save_model(request, obj, form, change)
+
+        if "semester" in form.changed_data:
+            semester = obj.semester
+
+            courses = Course.objects.filter(semester=semester)
+
+            for course in courses:
+                StudentCourse.objects.get_or_create(student=obj, course=course)
 
 
 admin.site.register(StudentProfile, StudentProfileAdmin)

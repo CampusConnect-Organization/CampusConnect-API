@@ -63,6 +63,40 @@ class LoginView(APIView):
         if not user or not user.check_password(password):
             return CustomResponse.error(message="Invalid credentials provided")
 
+        if not user.type in ["user", "student"]:
+            return CustomResponse.error(
+                message="Only students are allowed to login!",
+                status_code=401,
+            )
+
+        access_token, refresh_token = jwt_auth.create_tokens(user)
+
+        return CustomResponse.success(
+            data={"access_token": access_token, "refresh_token": refresh_token},
+            message="User logged in successfully!",
+        )
+
+
+class InstructorLoginView(APIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request: Request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.validated_data.get("username")
+        password = serializer.validated_data.get("password")
+
+        user = User.objects.filter(username=username).first()
+        if not user or not user.check_password(password):
+            return CustomResponse.error(message="Invalid credentials provided")
+
+        if not user.type == "instructor":
+            return CustomResponse.error(
+                message="Only instructors are allowed to login!",
+                status_code=401,
+            )
+
         access_token, refresh_token = jwt_auth.create_tokens(user)
 
         return CustomResponse.success(

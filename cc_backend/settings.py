@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from datetime import timedelta
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,7 @@ SECRET_KEY = "django-insecure-pdss!*91ra6w%(0m3a@tl3c+3wu%()u3^r9yj@)#naxd92aebi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.69"]
+ALLOWED_HOSTS = ["192.168.1.68", "localhost"]
 
 
 # Application definition
@@ -125,6 +126,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# URL that serves the files in MEDIA_ROOT
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -11,6 +11,8 @@ class StudentProfileCreateSerializer(serializers.ModelSerializer):
 
 
 class StudentProfileViewSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField()
+
     class Meta:
         model = StudentProfile
         exclude = ["user"]

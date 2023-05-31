@@ -15,11 +15,10 @@ class ExamAdmin(admin.ModelAdmin):
 
 @admin.register(GradeRecord)
 class GradeRecordAdmin(admin.ModelAdmin):
-    list_display = ("student", "exam", "marks_obtained", "has_passed")
+    list_display = ("student", "exam", "marks_obtained")
     list_filter = (
         "exam__course_session__course__title",
         "exam__exam_type",
-        "has_passed",
     )
     search_fields = ("student__user__email", "exam__course_session__course__title")
 

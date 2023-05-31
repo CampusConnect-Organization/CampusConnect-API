@@ -17,7 +17,7 @@ class BookInstanceAdmin(admin.ModelAdmin):
 
 @admin.register(BorrowRecord)
 class BorrowRecordAdmin(admin.ModelAdmin):
-    list_display = ("book_instance", "student", "borrow_date", "return_date")
+    list_display = ("book_instance", "student", "borrow_date")
     search_fields = (
         "book_instance__book__title",
         "book_instance__book__author",
@@ -37,6 +37,6 @@ class ReturnRecordAdmin(admin.ModelAdmin):
     )
 
     def save_model(self, request, obj, form, change):
+        obj.borrow_record.book_instance.borrowed = False
+        obj.borrow_record.book_instance.save()
         super().save_model(request, obj, form, change)
-        obj.borrow_record.return_date = obj.return_date
-        obj.borrow_record.save()

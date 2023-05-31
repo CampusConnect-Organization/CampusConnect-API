@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.response import CustomResponse
 from courses.models import CourseEnrollment
 from grades.models import Exam, GradeRecord
+from django.utils import timezone
 
 from grades.serializers import GradeRecordSerializer, ExamSerializer
 
@@ -17,13 +18,14 @@ class ExamListView(APIView):
         )
 
         exams = Exam.objects.filter(
-            course_session__in=course_enrollments.values("course_session")
-        )
+            course_session__in=course_enrollments.values("course_session"),
+            date__gte=timezone.now().date(),
+        ).order_by("date")
 
         serializer = self.serializer_class(instance=exams, many=True)
 
         return CustomResponse.success(
-            data=serializer.data, message="Exams fetched successfully!"
+            data=serializer.data, message="Upcoming exams fetched successfully!"
         )
 
 

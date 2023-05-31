@@ -15,6 +15,7 @@ markdown = "^3.4.3"
 django-filter = "^23.2"
 pyjwt = "^2.6.0"
 django-jazzmin = "^2.6.0"
+pillow = "^9.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
