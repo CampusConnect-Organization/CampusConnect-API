@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-pdss!*91ra6w%(0m3a@tl3c+3wu%()u3^r9yj@)#naxd92aebi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.68", "localhost"]
+ALLOWED_HOSTS = ["192.168.100.3", "localhost", "127.0.0.1", "192.168.100.25"]
 
 
 # Application definition
@@ -41,12 +41,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_extensions",
+    "django_spaghetti",
     "attendance",
     "authentication",
     "courses",
     "grades",
     "student_profile",
     "library",
+    "pu_result",
 ]
 
 MIDDLEWARE = [
@@ -193,4 +196,15 @@ JAZZMIN_UI_TWEAKS = {
         "danger": "btn-danger",
         "success": "btn-success",
     },
+}
+
+GRAPH_MODELS ={
+    "app_labels": ["courses", "student_profile", "authentication"],
+    "group_models": True,
+    "exclude_fields": True,
+}
+
+SPAGHETTI_SAUCE = {
+    'apps': ["authentication", "courses", "student_profile"],
+    'show_fields': True,
 }

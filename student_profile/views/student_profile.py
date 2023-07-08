@@ -11,7 +11,7 @@ from rest_framework.request import Request
 
 from core.response import CustomResponse
 
-User = get_user_model()
+User = get_user_model() 
 
 
 class StudentProfileView(APIView):
@@ -36,7 +36,7 @@ class StudentProfileView(APIView):
     def post(self, request: Request):
         user_dict = {"user": request.user.id}
         data = {
-            **request.data,
+            **request.data, # type: ignore
             **user_dict,
         }
         merged_data = {}
@@ -44,7 +44,7 @@ class StudentProfileView(APIView):
         merged_data.update(json.loads(data["data"][0]))
         merged_data["profile_picture"] = data["profile_picture"][0]
         merged_data["user"] = data["user"]
-        serializer = self.serializer_class(data=merged_data)
+        serializer = self.serializer_class(data=merged_data) # type: ignore
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return CustomResponse.success(

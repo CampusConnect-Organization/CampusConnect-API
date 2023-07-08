@@ -4,7 +4,6 @@ from django.forms import ValidationError
 
 from courses.models import Course
 from student_profile.models import StudentProfile
-from django.contrib import messages
 
 
 # Create your models here.
@@ -48,7 +47,7 @@ class BorrowRecord(models.Model):
 
         if previous_return_records.exists():
             latest_return_record = previous_return_records.first()
-            if latest_return_record.return_date and latest_return_record.return_date > datetime.now().date():
+            if latest_return_record.return_date and latest_return_record.return_date > datetime.now().date(): # type: ignore
                 raise ValidationError("The book has not been returned by the student.")
 
         super().save(*args, **kwargs)

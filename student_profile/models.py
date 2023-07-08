@@ -40,12 +40,12 @@ class StudentProfile(models.Model):
     symbol_number = models.CharField(null=True, max_length=50, blank=True)
     semester = models.CharField(choices=SEMESTER_CHOICES, max_length=50)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str: # type: ignore
         return f"{self.full_name}'s Profile"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.user.type = "student"
+        self.user.type = "student" # type: ignore
         self.user.save()
 
     @property

@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,6 +26,8 @@ urlpatterns = [
     path("api/courses/", include("courses.urls")),
     path("api/grades/", include("grades.urls")),
     path("api/library/", include("library.urls")),
+    path("api/results/", include("pu_result.urls")),
+    re_path(r'^plate/', include('django_spaghetti.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
