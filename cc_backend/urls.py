@@ -27,7 +27,8 @@ urlpatterns = [
     path("api/grades/", include("grades.urls")),
     path("api/library/", include("library.urls")),
     path("api/results/", include("pu_result.urls")),
-    re_path(r'^plate/', include('django_spaghetti.urls'))
+    path("api/notification/", include("notification.urls")),
+    re_path(r"^plate/", include("django_spaghetti.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 import os
 from pathlib import Path
+from firebase_admin import initialize_app
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+initialize_app()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +35,7 @@ SECRET_KEY = "django-insecure-pdss!*91ra6w%(0m3a@tl3c+3wu%()u3^r9yj@)#naxd92aebi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.100.3", "localhost", "127.0.0.1", "192.168.100.25"]
-
+ALLOWED_HOSTS = ["192.168.1.66", "localhost", "127.0.0.1", "192.168.100.25"]
 
 # Application definition
 
@@ -41,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "fcm_django",
     "django_extensions",
     "django_spaghetti",
     "attendance",
@@ -50,6 +58,7 @@ INSTALLED_APPS = [
     "student_profile",
     "library",
     "pu_result",
+    "notification",
 ]
 
 MIDDLEWARE = [
@@ -198,13 +207,13 @@ JAZZMIN_UI_TWEAKS = {
     },
 }
 
-GRAPH_MODELS ={
+GRAPH_MODELS = {
     "app_labels": ["courses", "student_profile", "authentication"],
     "group_models": True,
     "exclude_fields": True,
 }
 
 SPAGHETTI_SAUCE = {
-    'apps': ["authentication", "courses", "student_profile"],
-    'show_fields': True,
+    "apps": ["authentication", "courses", "student_profile"],
+    "show_fields": True,
 }

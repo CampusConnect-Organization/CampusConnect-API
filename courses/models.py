@@ -37,7 +37,7 @@ class InstructorProfile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.user.type = "instructor"
+        self.user.type = "instructor" # type: ignore
         self.user.save()
 
     def __str__(self):

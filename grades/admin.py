@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from core.notification_helper import send_notification
 from courses.models import CourseEnrollment
 
 from student_profile.models import StudentProfile
@@ -11,6 +12,16 @@ class ExamAdmin(admin.ModelAdmin):
     list_display = ("course_session", "exam_type", "total_marks", "date")
     list_filter = ("course_session", "exam_type", "date")
     search_fields = ("course_session__course__title", "exam_type", "date")
+
+    def save_model(self, request, obj, form, change):
+        # Save the exam
+        super().save_model(request, obj, form, change)
+
+        # Send notification with exam details
+        title = "New Exam Created"
+        body = f"Exam Type: {obj.exam_type.title()}\nTotal Marks: {obj.total_marks}\nDate: {obj.date}"
+
+        send_notification(title, body)
 
 
 @admin.register(GradeRecord)
@@ -34,7 +45,7 @@ class GradeRecordAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super().clean()  # type: ignore
         student = cleaned_data.get("student")
         if not CourseEnrollment.objects.filter(student=student).exists():
             raise forms.ValidationError("Student is not enrolled in any course.")
