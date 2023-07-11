@@ -27,7 +27,9 @@ SEMESTER_CHOICES = (
 
 
 class StudentProfile(models.Model):
-    profile_picture = models.ImageField(null=True, blank=True, upload_to="avatars/")
+    profile_picture = models.ImageField(
+        null=True, blank=True, upload_to="avatars/students/"
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -40,12 +42,12 @@ class StudentProfile(models.Model):
     symbol_number = models.CharField(null=True, max_length=50, blank=True)
     semester = models.CharField(choices=SEMESTER_CHOICES, max_length=50)
 
-    def __str__(self) -> str: # type: ignore
+    def __str__(self) -> str:  # type: ignore
         return f"{self.full_name}'s Profile"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.user.type = "student" # type: ignore
+        self.user.type = "student"  # type: ignore
         self.user.save()
 
     @property

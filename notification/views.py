@@ -16,13 +16,25 @@ class RegisterFCMDevice(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request: Request):
-        print(request)
         device = FCMDevice(registration_id=request.data.get("device_id"))  # type: ignore
         device.save()
 
         NotificationDevice.objects.create(user=request.user, device=device)
 
         return CustomResponse.success(message="Device registered for FCM successfully!")
+
+
+class NotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = NotificationSerializer
+
+    def get(self, request: Request):
+        notifications = NotificationModel.objects.all()
+        serializer = self.serializer_class(instance=notifications, many=True)
+
+        return CustomResponse.success(
+            serializer.data, message="Notifications fetched successfully!"
+        )
 
 
 class SendNotification(APIView):
@@ -33,10 +45,10 @@ class SendNotification(APIView):
         devices = FCMDevice.objects.all()
         serializer = self.serializer_class(data=request.data)  # type: ignore
         if serializer.is_valid():
-            NotificationModel.objects.create(
-                title=serializer.data.get("title"),
-                body=serializer.data.get("body"),
-            )
+            # NotificationModel.objects.create(
+            #     title=serializer.data.get("title"),
+            #     body=serializer.data.get("body"),
+            # )
             for device in devices:
                 device.send_message(
                     Message(

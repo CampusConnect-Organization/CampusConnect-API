@@ -1,7 +1,9 @@
 from django.contrib import admin
+
+from instructor_profile.models import InstructorProfile
 from .models import StudentProfile
 from django.contrib import messages
-from courses.models import Course, CourseEnrollment, InstructorProfile, StudentCourse
+from courses.models import Course, CourseEnrollment, StudentCourse
 
 
 class StudentProfileAdmin(admin.ModelAdmin):

@@ -1,11 +1,32 @@
+# type: ignore
 from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 from core.response import CustomResponse
+from core.permissions import IsInstructor
 from courses.models import CourseEnrollment
 from grades.models import Exam, GradeRecord
 from django.utils import timezone
 
-from grades.serializers import GradeRecordSerializer, ExamSerializer
+from grades.serializers import (
+    GradeRecordSerializer,
+    ExamSerializer,
+    ExamCreateSerializer,
+)
+
+
+class ExamView(APIView):
+    permission_classes = [IsAuthenticated, IsInstructor]
+    serializer_class = ExamCreateSerializer
+
+    def post(self, request: Request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return CustomResponse.success(
+            data=serializer.data,
+            message="Exam created successfully!",
+        )
 
 
 class ExamListView(APIView):

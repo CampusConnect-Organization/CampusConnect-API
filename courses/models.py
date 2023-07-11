@@ -26,30 +26,12 @@ class Course(models.Model):
         return self.title
 
 
-class InstructorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-
-    @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.user.type = "instructor" # type: ignore
-        self.user.save()
-
-    def __str__(self):
-        return self.full_name
-
-
 class CourseSession(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     start = models.DateField()
     end = models.DateField()
     instructor = models.ForeignKey(
-        InstructorProfile, on_delete=models.SET_NULL, null=True
+        "instructor_profile.InstructorProfile", on_delete=models.SET_NULL, null=True
     )
 
     def __str__(self):

@@ -18,6 +18,12 @@ class ExamSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ExamCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exam
+        fields = "__all__"
+
+
 class GradeRecordSerializer(serializers.ModelSerializer):
     exam = serializers.CharField(source="exam.course_session.course.title")
     full_marks = serializers.IntegerField(source="exam.total_marks")

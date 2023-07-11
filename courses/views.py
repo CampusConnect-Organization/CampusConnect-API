@@ -1,6 +1,8 @@
+# type: ignore
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
+from core.permissions import IsInstructor
 from core.response import CustomResponse
 
 from courses.serializers import (
@@ -8,6 +10,7 @@ from courses.serializers import (
     CourseSessionSerializer,
     CourseSerializer,
     StudentCoursesSerializer,
+    CourseEnrollmentCreateSerializer,
 )
 from courses.models import CourseEnrollment, CourseSession, Course, StudentCourse
 
@@ -157,4 +160,19 @@ class CourseEnrollmentDetailView(APIView):
 
         return CustomResponse.success(
             data=serializer.data, message="Enrollment fetched successfully!"
+        )
+
+
+class CourseEnrollmentCreateView(APIView):
+    permission_classes = [IsAuthenticated, IsInstructor]
+    serializer_class = CourseEnrollmentCreateSerializer
+
+    def post(self, request: Request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return CustomResponse.success(
+            message="Student enrolled successfully!",
+            data=serializer.data,
         )

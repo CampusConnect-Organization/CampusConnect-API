@@ -3,6 +3,7 @@ from rest_framework.permissions import (
     BasePermission,
     DjangoModelPermissions,
 )
+from rest_framework.request import Request
 
 
 class CustomPermissions(DjangoModelPermissions):
@@ -24,3 +25,8 @@ class IsAuthenticatedAndReadOnly(BasePermission):
             and request.user
             and request.user.is_authenticated
         )
+
+
+class IsInstructor(BasePermission):
+    def has_permission(self, request: Request, view):
+        return bool(request.user.is_authenticated and request.user.instructorprofile)

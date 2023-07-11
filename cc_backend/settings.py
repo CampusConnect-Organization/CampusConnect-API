@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "library",
     "pu_result",
     "notification",
+    "instructor_profile",
 ]
 
 MIDDLEWARE = [

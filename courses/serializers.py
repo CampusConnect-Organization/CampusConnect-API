@@ -50,3 +50,9 @@ class CourseEnrollmentSerializer(serializers.ModelSerializer):
             "end_date",
             "semester",
         ]
+
+
+class CourseEnrollmentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseEnrollment
+        fields = "__all__"

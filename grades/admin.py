@@ -1,3 +1,4 @@
+# type: ignore
 from django import forms
 from django.contrib import admin
 from core.notification_helper import send_notification
@@ -14,14 +15,15 @@ class ExamAdmin(admin.ModelAdmin):
     search_fields = ("course_session__course__title", "exam_type", "date")
 
     def save_model(self, request, obj, form, change):
-        # Save the exam
-        super().save_model(request, obj, form, change)
+        if not change:
+            super().save_model(request, obj, form, change)
 
-        # Send notification with exam details
-        title = "New Exam Created"
-        body = f"Exam Type: {obj.exam_type.title()}\nTotal Marks: {obj.total_marks}\nDate: {obj.date}"
+            title = "New Exam Created"
+            body = f"Subject: {obj.course_session.course.title}\nExam Type: {obj.exam_type.title()}\nTotal Marks: {obj.total_marks}\nDate: {obj.date}\nTime: {obj.time}"
 
-        send_notification(title, body)
+            send_notification(title, body)
+        else:
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(GradeRecord)

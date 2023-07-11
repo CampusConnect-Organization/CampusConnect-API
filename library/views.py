@@ -83,9 +83,11 @@ class BookBorrowListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        borrow_records = BorrowRecord.objects.filter(
-            student=request.user.studentprofile
-        ).all()
+        borrow_records = (
+            BorrowRecord.objects.filter(student=request.user.studentprofile)
+            .all()
+            .order_by("-id")
+        )
 
         serializer = self.serializer_class(instance=borrow_records, many=True)
         return CustomResponse.success(
@@ -120,7 +122,7 @@ class BookReturnListView(APIView):
     def get(self, request):
         return_records = ReturnRecord.objects.filter(
             borrow_record__student=request.user.studentprofile
-        )
+        ).order_by("-id")
 
         serializer = self.serializer_class(instance=return_records, many=True)
 

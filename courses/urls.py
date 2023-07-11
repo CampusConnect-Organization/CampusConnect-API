@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     CourseDetailView,
+    CourseEnrollmentCreateView,
     CourseEnrollmentDetailView,
     CourseEnrollmentListView,
     CourseSessionListView,
@@ -25,4 +26,9 @@ urlpatterns = [
     ),
     path("enrollments/", CourseEnrollmentListView.as_view(), name="enrollments"),
     path("enrollment/<pk>/", CourseEnrollmentDetailView.as_view(), name="enrollment"),
+    path(
+        "create-enrollment/",
+        CourseEnrollmentCreateView.as_view(),
+        name="create-enrollment",
+    ),
 ]
