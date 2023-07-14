@@ -28,7 +28,8 @@ urlpatterns = [
     path("api/library/", include("library.urls")),
     path("api/results/", include("pu_result.urls")),
     path("api/notification/", include("notification.urls")),
-    path("api/instructor-profile/", include("instructor_profile.urls")),
+    path("api/instructor/", include("instructor_profile.urls")),
+    path("api/attendance/", include("attendance.urls")),
     re_path(r"^plate/", include("django_spaghetti.urls")),
 ]
 

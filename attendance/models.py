@@ -1,7 +1,14 @@
 from django.db import models
+from datetime import datetime, date
+from django.core.exceptions import ValidationError
 
 
-# Create your models here.
+ATTENDANCE_STATUS = (
+    ("absent", "Absent"),
+    ("present", "Present"),
+)
+
+
 class Attendance(models.Model):
     course_session = models.ForeignKey(
         "courses.CourseSession", on_delete=models.CASCADE
@@ -9,5 +16,20 @@ class Attendance(models.Model):
     student = models.ForeignKey(
         "student_profile.StudentProfile", on_delete=models.CASCADE
     )
-    attendance_count = models.IntegerField(default=0)
-    last_updated = models.DateField(auto_now=True)
+    status = models.CharField(max_length=20, choices=ATTENDANCE_STATUS)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only prevent creation, not updates
+            # Check if attendance has already been taken today
+            today = date.today()
+            existing_attendance = Attendance.objects.filter(
+                course_session=self.course_session,
+                student=self.student,
+                date__date=today,
+            ).exists()
+
+            if existing_attendance:
+                raise ValidationError("Attendance has already been taken today.")
+
+        super().save(*args, **kwargs)

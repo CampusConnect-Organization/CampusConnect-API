@@ -30,3 +30,8 @@ class IsAuthenticatedAndReadOnly(BasePermission):
 class IsInstructor(BasePermission):
     def has_permission(self, request: Request, view):
         return bool(request.user.is_authenticated and request.user.instructorprofile)
+
+
+class IsStudent(BasePermission):
+    def has_permission(self, request: Request, view):
+        return bool(request.user.is_authenticated and request.user.studentprofile)

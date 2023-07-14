@@ -14,7 +14,7 @@ from .models import (
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ("title", "course_code", "semester")
-    search_fields = ("title", "course_code", "description")
+    search_fields = ("title", "course_code", "description", "semester")
 
 
 @admin.register(CourseSession)
