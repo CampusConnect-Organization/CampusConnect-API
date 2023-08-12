@@ -35,7 +35,13 @@ SECRET_KEY = "django-insecure-pdss!*91ra6w%(0m3a@tl3c+3wu%()u3^r9yj@)#naxd92aebi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.70", "localhost", "127.0.0.1", "192.168.100.25"]
+ALLOWED_HOSTS = [
+    "192.168.1.70",
+    "localhost",
+    "127.0.0.1",
+    "192.168.100.25",
+    "https://campus-connect-api-phh6.vercel.app/",
+]
 
 # Application definition
 
