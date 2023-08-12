@@ -52,6 +52,22 @@ class CourseEnrollmentSerializer(serializers.ModelSerializer):
         ]
 
 
+class CourseEnrollmentStudentsSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source="student.full_name")
+    course_session_name = serializers.CharField(source="course_session.course.title")
+    course_session_id = serializers.IntegerField(source="course_session.id")
+
+    class Meta:
+        model = CourseEnrollment
+        fields = [
+            "id",
+            "student",
+            "student_name",
+            "course_session_name",
+            "course_session_id",
+        ]
+
+
 class CourseEnrollmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseEnrollment

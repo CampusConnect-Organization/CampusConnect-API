@@ -1,4 +1,3 @@
-# type: ignore
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -7,12 +6,15 @@ from core.response import CustomResponse
 
 from courses.serializers import (
     CourseEnrollmentSerializer,
+    CourseEnrollmentStudentsSerializer,
     CourseSessionSerializer,
     CourseSerializer,
     StudentCoursesSerializer,
     CourseEnrollmentCreateSerializer,
 )
 from courses.models import CourseEnrollment, CourseSession, Course, StudentCourse
+from student_profile.models import StudentProfile
+from student_profile.serializers import StudentProfileViewSerializer
 
 
 class CourseListView(APIView):
@@ -168,11 +170,44 @@ class CourseEnrollmentCreateView(APIView):
     serializer_class = CourseEnrollmentCreateSerializer
 
     def post(self, request: Request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data)  # type: ignore
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return CustomResponse.success(
             message="Student enrolled successfully!",
             data=serializer.data,
+        )
+
+
+class CourseSessionInstructorView(APIView):
+    permission_classes = [IsAuthenticated, IsInstructor]
+    serializer_class = CourseSessionSerializer
+
+    def get(self, request: Request):
+        course_sessions = CourseSession.objects.filter(
+            instructor=request.user.instructorprofile
+        ).all()
+
+        serializer = self.serializer_class(instance=course_sessions, many=True)
+
+        return CustomResponse.success(
+            data=serializer.data,
+            message="Course sessions of instructor fetched successfully!",
+        )
+
+
+class EnrolledStudentsView(APIView):
+    permission_classes = [IsAuthenticated, IsInstructor]
+    serializer_class = CourseEnrollmentStudentsSerializer
+
+    def get(self, request: Request, pk):
+        students = CourseEnrollment.objects.filter(
+            course_session=pk,
+            course_session__instructor=request.user.instructorprofile,
+        )
+        serializer = self.serializer_class(students, many=True)
+        return CustomResponse.success(
+            data=serializer.data,
+            message="Students enrolled in course fetched!",
         )

@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, date
+from datetime import date
 from django.core.exceptions import ValidationError
 
 
@@ -20,8 +20,7 @@ class Attendance(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Only prevent creation, not updates
-            # Check if attendance has already been taken today
+        if not self.pk:
             today = date.today()
             existing_attendance = Attendance.objects.filter(
                 course_session=self.course_session,
