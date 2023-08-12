@@ -1,0 +1,10 @@
+{
+    "builds":{
+        "src": "cc_backend/wsgi.py",
+        "use": "@vercel/python"
+    },
+    "routes": {
+        "src": "/(.*)",
+        "dest": "cc_backend/wsgi.py"
+    }
+}
