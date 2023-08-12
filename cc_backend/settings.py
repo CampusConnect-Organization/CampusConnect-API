@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "192.168.100.25",
-    "https://campus-connect-api-phh6.vercel.app/",
+    "campus-connect-api-phh6.vercel.app",
 ]
 
 # Application definition
